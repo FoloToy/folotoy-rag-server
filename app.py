@@ -3,7 +3,7 @@ import dotenv
 import time
 import uvicorn
 
-from langchain_openai import OpenAI
+from langchain_openai import OpenAI, ChatOpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import AnalyzeDocumentChain
 from langchain.text_splitter import CharacterTextSplitter
@@ -25,7 +25,7 @@ def get_env(key):
 
 
 def summarize(content: str, chain_type: str):
-    llm = OpenAI(temperature=0, model_name="gpt-3.5-turbo-instruct")
+    llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
     text_splitter = CharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=0,

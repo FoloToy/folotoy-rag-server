@@ -3,7 +3,7 @@ import dotenv
 import time
 import uvicorn
 
-from langchain_community.llms import OpenAI
+from langchain_openai import OpenAI
 from langchain.chains.summarize import load_summarize_chain
 from langchain.chains import AnalyzeDocumentChain
 from langchain.text_splitter import CharacterTextSplitter
@@ -33,7 +33,7 @@ def summarize(content: str, chain_type: str):
     )
     summary_chain = load_summarize_chain(llm, chain_type=chain_type)
     summarize_document_chain = AnalyzeDocumentChain(combine_docs_chain=summary_chain, text_splitter=text_splitter)
-    summary_text = summarize_document_chain.run(content)
+    summary_text = summarize_document_chain.invoke(content)
     return summary_text
 
 
@@ -100,7 +100,7 @@ def predict(query: str, model_id: str, chain_type: str):
     summary = summarize(query, chain_type)
     choice_data = ChatCompletionResponseStreamChoice(
         index=0,
-        delta=DeltaMessage(content=summary, role="assistant"),
+        delta=DeltaMessage(content=summary['output_text'], role="assistant"),
         finish_reason=None
     )
     chunk = ChatCompletionResponse(model=model_id, choices=[

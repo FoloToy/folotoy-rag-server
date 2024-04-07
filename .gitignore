@@ -166,3 +166,4 @@ cython_debug/
 .DS_Store
 *.db
 *.mp3
+.env

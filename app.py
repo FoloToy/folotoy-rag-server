@@ -25,7 +25,7 @@ def get_env(key):
 
 
 def summarize(content: str, chain_type: str):
-    llm = OpenAI(temperature=0)
+    llm = OpenAI(temperature=0, model_name="gpt-3.5-turbo-instruct")
     text_splitter = CharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=0,

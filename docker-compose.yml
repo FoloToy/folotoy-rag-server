@@ -1,0 +1,9 @@
+services:
+  folotoy-rag-server:
+    image: lewangdev/folotoy-rag-server
+    ports:
+      - "8001:8001"
+    environment:
+      CHAIN_TYPE: map_reduce
+      OPENAI_API_KEY: "sk-"
+      OPENAI_API_BASE: "https://one-api.magickchat.com/v1"

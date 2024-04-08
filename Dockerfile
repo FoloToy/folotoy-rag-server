@@ -4,6 +4,6 @@ COPY . /src
 
 WORKDIR /src
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements-frozen.txt
 
 CMD ["python3", "app.py"]

@@ -24,8 +24,8 @@ def get_env(key):
     return os.environ.get(key, DEFAULTS.get(key))
 
 
-def summarize(content: str, chain_type: str):
-    llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+def summarize(content: str, chain_type: str, model_name: str):
+    llm = ChatOpenAI(temperature=0, model_name=model_name)
     text_splitter = CharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=0,
@@ -97,7 +97,7 @@ def predict(query: str, model_id: str, chain_type: str):
         choice_data], object="chat.completion.chunk")
     yield "{}".format(chunk.json(exclude_unset=True))
 
-    summary = summarize(query, chain_type)
+    summary = summarize(query, chain_type, model_id)
     choice_data = ChatCompletionResponseStreamChoice(
         index=0,
         delta=DeltaMessage(content=summary['output_text'], role="assistant"),

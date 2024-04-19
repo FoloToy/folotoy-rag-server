@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Literal, Optional, Union
+from langdetect import detect
 
 dotenv.load_dotenv()
 
@@ -27,11 +28,11 @@ We have the opportunity to refine the existing summary (only if needed) with som
 ------------
 Given the new context, refine the original summary.
 If the context isn't useful, return the original summary.
-The language of summary must keep the same as the original text.
+The language of summary must keep in {language}.
 """
 
 summary_prompt_template = """Write a concise summary of the following, 
-and the language of summary must keep the same as the original text:
+and the language of summary must keep in {language}.
 
 
 "{text}"
@@ -48,11 +49,11 @@ We have the opportunity to refine the existing todo list (only if needed) with s
 ------------
 Given the new context, refine the original todo list.
 If the context isn't useful, return the original todo list.
-The language of summary must keep the same as the original text.
+The language of todo list must keep in {language}.
 """
 
 todo_prompt_template = """Write a concise todo list of the following, 
-and the language of todo list must keep the same as the original text:
+and the language of todo list must keep in {language}:
 
 
 "{text}"
@@ -68,6 +69,7 @@ def get_env(key):
 def make_todo_list(content: str, model_name: str):
     client = OpenAI()
 
+    language = detect(content)
     length = len(content)
     chunk_size = 1500
     start_idx = 0
@@ -85,9 +87,9 @@ def make_todo_list(content: str, model_name: str):
         start_idx = end_idx
 
         if times == 1:
-            content = todo_prompt_template.format(text=text)
+            content = todo_prompt_template.format(text=text, language=language)
         else:
-            content = todo_refine_prompt_template.format(answer=answer, text=text)
+            content = todo_refine_prompt_template.format(answer=answer, text=text, language=language)
 
         messages = [{
             "role": "user",
@@ -113,6 +115,7 @@ def make_todo_list(content: str, model_name: str):
 def summarize(content: str, model_name: str):
     client = OpenAI()
 
+    language = detect(content)
     length = len(content)
     chunk_size = 1500
     start_idx = 0
@@ -130,9 +133,9 @@ def summarize(content: str, model_name: str):
         start_idx = end_idx
 
         if times == 1:
-            content = summary_prompt_template.format(text=text)
+            content = summary_prompt_template.format(text=text, language=language)
         else:
-            content = summary_refine_prompt_template.format(answer=answer, text=text)
+            content = summary_refine_prompt_template.format(answer=answer, text=text, language=language)
 
         messages = [{
             "role": "user",

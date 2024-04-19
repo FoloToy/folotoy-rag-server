@@ -231,7 +231,7 @@ def predict(query: str, model_id: str):
     todo_list = make_todo_list(query, model_id)
     choice_data = ChatCompletionResponseStreamChoice(
         index=0,
-        delta=DeltaMessage(content=f"Todo List:\n {todo_list}", role="assistant"),
+        delta=DeltaMessage(content=f"\n\nTodo List:\n {todo_list}", role="assistant"),
         finish_reason=None
     )
     chunk = ChatCompletionResponse(model=model_id, choices=[
@@ -240,7 +240,7 @@ def predict(query: str, model_id: str):
 
     choice_data = ChatCompletionResponseStreamChoice(
         index=0,
-        delta=DeltaMessage(content=f"Transcription:\n {query}", role="assistant"),
+        delta=DeltaMessage(content=f"\n\nTranscription:\n {query}", role="assistant"),
         finish_reason=None
     )
     chunk = ChatCompletionResponse(model=model_id, choices=[

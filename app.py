@@ -240,6 +240,15 @@ def predict(query: str, model_id: str):
 
     choice_data = ChatCompletionResponseStreamChoice(
         index=0,
+        delta=DeltaMessage(content=f"Transcription:\n {query}", role="assistant"),
+        finish_reason=None
+    )
+    chunk = ChatCompletionResponse(model=model_id, choices=[
+        choice_data], object="chat.completion.chunk")
+    yield "{}".format(chunk.json(exclude_unset=True))
+
+    choice_data = ChatCompletionResponseStreamChoice(
+        index=0,
         delta=DeltaMessage(),
         finish_reason="stop"
     )
